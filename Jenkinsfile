@@ -1,10 +1,7 @@
 pipeline {
     agent any
 
-    environment {
-        // You can define environment variables here
-        MY_VAR = 'example_value'
-    }
+   
 
     stages {
         stage('Checkout') {
@@ -18,7 +15,7 @@ pipeline {
             steps {
                 // Example build step
                 echo 'Building the project...'
-                sh 'make build'  // Replace with your build command
+                'make build'  // Replace with your build command
             }
         }
 
@@ -26,7 +23,7 @@ pipeline {
             steps {
                 // Example test step
                 echo 'Running tests...'
-                sh 'make test'  // Replace with your test command
+                 'make test'  // Replace with your test command
             }
         }
 
@@ -34,5 +31,5 @@ pipeline {
             steps {
                 // Example deployment step
                 echo 'Deploying the application...'
-                sh 'make deploy'  // Replace with your deploy command
+                'make deploy'  // Replace with your deploy command
    
