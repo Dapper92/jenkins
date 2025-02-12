@@ -1,14 +1,19 @@
 pipeline {
     agent any
+    environment
+      USER_CUSTOM_VARIABLE="james"
+      ANOTHER_CUSTOM_VARIABLE="john"
     stages {
         stage('Build') {
             steps {
                 echo "This is building stpe"
             }
         }
-        stage('Test') {
-            steps {
-                echo "this is testing step"
+        stage('Testing') {
+            when {
+                expression{
+                       BRANCH_NAME == "testing"
+                } "this is testing step"
             }
         }
         stage('Deploy') {
