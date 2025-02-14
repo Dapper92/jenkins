@@ -49,7 +49,7 @@ pipeline {
             }
             emailext(
                 subject: "everything failed"
-                body: "this is the default body. ${env.JOB_NAME} - ${env.BUILD_NUMBER},
+                body: "this is the default body". ${env.JOB_NAME} - ${env.BUILD_NUMBER},
                        ${env.BUILD_URL}
 
                        ${env.BUILD_LOG}
