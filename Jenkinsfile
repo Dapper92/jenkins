@@ -2,10 +2,11 @@ pipeline {
     agent any
     stages {
 
-        tools {
-            nodejs "node18"
-        }
-        stage('checkout'){
+    tools {
+         nodejs "node18"
+    }
+    stages {
+         stage("checkout"){
             git "https://github.com/Dapper92/jenkins.git"
         }
         stage("starting"){
