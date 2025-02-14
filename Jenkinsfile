@@ -45,7 +45,7 @@ pipeline {
         }
         failure {
             script {
-                def build log = currentBuild.rawBuild.getLog(200).join('\n')
+                def build_log = currentBuild.rawBuild.getLog(100).join('\n')
             }
             emailext(
                 subject: "everything failed"
