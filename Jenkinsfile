@@ -2,9 +2,9 @@ pipeline {
     agent any
     stages {
         stage('checkout') {
-            steps{
-                 echo "this is checkout"
-            }     
+            steps {
+                echo "This is checkout"
+            }
         }
         stage('Build') {
             steps {
@@ -13,7 +13,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                echo "this is testing step"
+                echo "This is testing step"
             }
         }
         stage('Deploy') {
@@ -21,24 +21,21 @@ pipeline {
                 script {
                     try {
                         sh "ssh -o -i tester.key root@123.222.222.23.22"
-                       }catch(err){
-                    if(err){
-                        currentBuild.result = ${build_log}
+                    } catch (err) {
+                        echo "Deployment failed"
                         throw err
                     }
-                } 
-                
+                }
             }
         }
     }
+    
     post {
-        
-        }
         success {
             emailext(
-                subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}, ${BUILD_NUMBER},${env.BUILD_LOG}",
+                subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME} #${BUILD_NUMBER}",
                 body: "Build Status: ${currentBuild.currentResult}\nCheck the console output at ${env.BUILD_URL}",
-                to: "oladapper92gmail.com",
+                to: "oladapper92@gmail.com",
                 replyTo: "oladapper92@gmail.com",
                 from: "oladapper@gmail.com"
             )
@@ -46,18 +43,18 @@ pipeline {
         failure {
             script {
                 def build_log = currentBuild.rawBuild.getLog(100).join('\n')
+                emailext(
+                    subject: "Build Failed: ${env.JOB_NAME} #${BUILD_NUMBER}",
+                    body: """Build Status: ${currentBuild.currentResult}
+                    Check the console output at: ${env.BUILD_URL}
+                    Last 100 lines of build log:
+                    ${build_log}
+                    """,
+                    to: "oladapper92@gmail.com",
+                    replyTo: "oladapper92@gmail.com",
+                    from: "oladapper@gmail.com"
+                )
             }
-            emailext(
-                subject: "everything failed"
-                body: "Build Status: ${currentBuild.currentResult}\nCheck the console output at ${env.BUILD_URL}",
-                       ${env.BUILD_URL}
-
-                       ${env.BUILD_LOG}
-                to: "oladapper92@gmail.com",
-                replyTo: "oladapper92@gmail.com",
-                from: "oladapper@gmail.com"
-                
-            )
         }
     }
 }
