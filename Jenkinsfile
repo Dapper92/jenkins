@@ -1,28 +1,32 @@
 pipeline {
     agent any
     stages {
-        stage('checkout') {
+
+        tools {
+            nodejs "node18"
+        }
+        stage('checkout'){
+            git "https://github.com/Dapper92/jenkins.git"
+        }
+        stage("starting"){
             steps {
-                echo "This is checkout"
+                echo "This is the starting stage"
             }
         }
         stage('Build') {
-            steps {
-                echo "This is building step"
+            when{
+                expression{
+                    BRANCH_NAME == "testing"
+                }
             }
-        }
-        stage('Test') {
-            steps {
-                echo "This is testing step"
-            }
-        }
-        stage('Deploy') {
+            
+         
             steps {
                 script {
                     try {
-                        sh "ssh -o -i tester.key root@123.222.222.23.22"
-                    } catch (err) {
-                        echo "Deployment failed"
+                        sh "npm run test | tee build.log"
+                    }catch (err) {
+                        currentBuild.result = "Failure"
                         throw err
                     }
                 }
@@ -42,7 +46,8 @@ pipeline {
         }
         failure {
             script {
-                def build_log = currentBuild.rawBuild.getLog(100).join('\n')
+                // def build_log = currentBuild.rawBuild.getLog(100).join('\n')
+                def build_log =readFile("build.log")
                 emailext(
                     subject: "Build Failed: ${env.JOB_NAME} #${BUILD_NUMBER}",
                     body: """Build Status: ${currentBuild.currentResult}
