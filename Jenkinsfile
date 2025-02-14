@@ -1,40 +1,42 @@
 pipeline {
     agent any
-    stages {
 
     tools {
-         nodejs "node18"
+        nodejs "node18"
     }
+
     stages {
-         stage("checkout"){
-            git "https://github.com/Dapper92/jenkins.git"
+        stage("checkout") {
+            steps {
+                git "https://github.com/Dapper92/jenkins.git"
+            }
         }
-        stage("starting"){
+
+        stage("starting") {
             steps {
                 echo "This is the starting stage"
             }
         }
-        stage('Build') {
-            when{
-                expression{
-                    BRANCH_NAME == "testing"
+
+        stage("Build") {
+            when {
+                expression {
+                    env.BRANCH_NAME == "testing"  // ✅ Corrected BRANCH_NAME reference
                 }
             }
-            
-         
             steps {
                 script {
                     try {
                         sh "npm run test | tee build.log"
-                    }catch (err) {
-                        currentBuild.result = "Failure"
+                    } catch (err) {
+                        currentBuild.result = "FAILURE"
                         throw err
                     }
                 }
             }
         }
     }
-    
+
     post {
         success {
             emailext(
@@ -47,8 +49,7 @@ pipeline {
         }
         failure {
             script {
-                // def build_log = currentBuild.rawBuild.getLog(100).join('\n')
-                def build_log =readFile("build.log")
+                def build_log = readFile("build.log")  // ✅ Reads log file for failure email
                 emailext(
                     subject: "Build Failed: ${env.JOB_NAME} #${BUILD_NUMBER}",
                     body: """Build Status: ${currentBuild.currentResult}
