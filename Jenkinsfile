@@ -22,7 +22,7 @@ pipeline {
                     try {
                         sh "ssh -o -i tester.key root@123.222.222.23.22"
                        }catch(err)
-                        if(err)
+                       if(err){ 
                            currentBuild.Result="failure"
                         throw(err)   
 
