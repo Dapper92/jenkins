@@ -45,7 +45,7 @@ pipeline {
         //         to: "oladapper92@gmail.com",
         //         replyTo: "oladapper92@gmail.com",
         //         from: "oladapper@gmail.com"
-            )
+        // )
         }
         failure {
             script {
