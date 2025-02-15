@@ -29,7 +29,7 @@ pipeline {
                     try {
                         sh "npm run test | tee build.log"
                     } catch (err) {
-                        currentBuild.result = "FAILURE"
+                        echo "error is ${err.getMessage}"
                         throw err
                     }
                 }
@@ -37,14 +37,14 @@ pipeline {
         }
     }
 
-    post {
-        success {
-            emailext(
-                subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME} #${BUILD_NUMBER}",
-                body: "Build Status: ${currentBuild.currentResult}\nCheck the console output at ${env.BUILD_URL}",
-                to: "oladapper92@gmail.com",
-                replyTo: "oladapper92@gmail.com",
-                from: "oladapper@gmail.com"
+    // post {
+    //     success {
+    //         emailext(
+    //             subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME} #${BUILD_NUMBER}",
+    //             body: "Build Status: ${currentBuild.currentResult}\nCheck the console output at ${env.BUILD_URL}",
+    //             to: "oladapper92@gmail.com",
+    //             replyTo: "oladapper92@gmail.com",
+    //             from: "oladapper@gmail.com"
             )
         }
         failure {
