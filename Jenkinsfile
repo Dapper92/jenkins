@@ -42,28 +42,33 @@ pipeline {
     post {
         success {
             script { 
-                def build_log =readFile("builder.log")
-            emailext(
-                subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME} #${BUILD_NUMBER}",
-                body: "Build Status: ${currentBuild.currentResult}\nCheck the console output at ${env.BUILD_URL}",
-                to: "oladapper92@gmail.com",
-                replyTo: "oladapper92@gmail.com",
-                from: "oladapper@gmail.com"
-            )   
+                def build_log = readFile("builder.log")
+                emailext(
+                    subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME} #${BUILD_NUMBER}",
+                    body: "Build Status: ${currentBuild.currentResult}\nCheck the console output at ${env.BUILD_URL}",
+                    to: "oladapper92@gmail.com",
+                    replyTo: "oladapper92@gmail.com",
+                    from: "oladapper@gmail.com"
+                )   
+            }
         }
+        
         failure {
-                script{
-                     //def build_log = currentBuild.rawBuild.getLog(100).join('\n') 
-                     //def build_log = Manager.build.log
-                     def build_log = readFile("builder.log")
-                        emailext(
-                            subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}, ${env.BUILD_NUMBER}, ${JOB_NAME}, ${build_log},  ${BUILD_URL}",
-                            body: "Build Status: ${currentBuild.currentResult}\nCheck the console output at ${env.BUILD_URL}",
-                            to: "oladapper92@gmail.com",
-                            replyTo: "oladapper@gmail.com",
-                            from: "oladapper@gmail.com"
-                        )                    
-                }
+            script {
+                // Reads the build log to send in the failure email
+                def build_log = readFile("builder.log")
+                emailext(
+                    subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}, ${env.BUILD_NUMBER}",
+                    body: """Build Status: ${currentBuild.currentResult}
+                    Check the console output at: ${env.BUILD_URL}
+                    Last 100 lines of build log:
+                    ${build_log}
+                    """,
+                    to: "oladapper92@gmail.com",
+                    replyTo: "oladapper@gmail.com",
+                    from: "oladapper@gmail.com"
+                )                    
+            }
         }
     }
 }
