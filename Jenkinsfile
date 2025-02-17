@@ -52,7 +52,7 @@ pipeline {
             }
             steps {
                 script {
-                    echo "Building Docker image: ${dapper01/new-test-image}:${1}"
+                    // echo "Building Docker image: ${dapper01/new-test-image}:${1}"
                     
                     // Build Docker image
                     sh "docker build -t ${dapper01/new-test-image}:${1} ."
