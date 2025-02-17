@@ -29,18 +29,18 @@ pipeline {
                     env.BRANCH_NAME == "testing"
                 }
             }
-            steps {
-                // sh "npm init -y"
-                // script {
-                //     try {
-                //         sh "npm run start"
-                //         sh "npm run test | tee builder.log"
-                //     } catch (Exception err) {
-                //         sh "echo ${err} | tee builder.log"
-                //         throw err
-                //     }
-                // }
-            }
+            // steps {
+            //     // sh "npm init -y"
+            //     // script {
+            //     //     try {
+            //     //         sh "npm run start"
+            //     //         sh "npm run test | tee builder.log"
+            //     //     } catch (Exception err) {
+            //     //         sh "echo ${err} | tee builder.log"
+            //     //         throw err
+            //     //     }
+            //     // }
+            // }
         }
 
         stage("Docker Build") {
