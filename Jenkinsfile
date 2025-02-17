@@ -14,7 +14,7 @@ pipeline {
 
         stage("starting") {
             steps {
-                echo "This is the starting stage"
+                echo "This is the actual starting stage"
             }
         }
 
@@ -45,7 +45,7 @@ pipeline {
         //         to: "oladapper92@gmail.com",
         //         replyTo: "oladapper92@gmail.com",
         //         from: "oladapper@gmail.com"
-        //     )
+        //     )   
         // }
         failure {
             script {
