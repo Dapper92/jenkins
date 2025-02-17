@@ -64,7 +64,7 @@ pipeline {
                     }
 
                     // Push Docker image
-                    sh "docker push dapper01/new-test-image}:1"
+                    sh "docker push dapper01/new-test-image:1"
                 }
             }
         }
