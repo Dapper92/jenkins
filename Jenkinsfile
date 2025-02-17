@@ -6,8 +6,8 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = "your-dockerhub-username/your-image-name"
-        IMAGE_TAG = "latest"
+        IMAGE_NAME = "dapper01/new-test-image"
+        IMAGE_TAG = "1"
     }
 
     stages {
@@ -51,19 +51,19 @@ pipeline {
             }
             steps {
                 script {
-                    echo "Building Docker image: ${dapper01/new-test-image}:${1}"
+                    echo "Building Docker image: ${IMAGE_NAME}:${IMAGE_TAG}"
                     
-                    // Build the Docker image
-                    sh "docker build -t dapper01/new-test-image:1 ."
+                    // Build Docker image
+                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
 
-                     // Use Jenkins credentials to log in to DockerHub securely
+                    // Use Jenkins credentials to log in to DockerHub securely
                     withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                         sh "echo 'Logging into DockerHub securely...'"
                         sh "docker login -u $DOCKER_USER -p $DOCKER_PASS"
                     }
 
                     // Push Docker image
-                    sh "docker push ${dapper01/new-test-image}:${1}"
+                    sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
                 }
             }
         }
@@ -98,10 +98,6 @@ pipeline {
                     from: "oladapper@gmail.com"
                 )                    
             }
-        }
-    }
-}
-
         }
     }
 }
