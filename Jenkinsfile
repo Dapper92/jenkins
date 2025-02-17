@@ -1,41 +1,39 @@
 pipeline {
     agent any
-        tools {
-            nodejs "node 18"
+
+    tools {
+        nodejs "node 18"
     }
 
     stages {
-        stage('checkout') {
-            steps{
-                 git "https://github.com/Oluwaseun186/jenkinsfile.git"
-            }     
+        stage("checkout") {
+            steps {
+                git "https://github.com/Dapper92/jenkins.git"
+            }
         }
 
-        stage('building') {
-             when{
-                 expression{
-                    BRANCH_NAME == "testing."
-                 }
-             }
+        stage("starting") {
             steps {
-                script{
-                    try{
-                        sh 'touch build.log'
-                        sh "npm install"
-                        sh "npm run build"
-                        sh "npm run test"
-                       
-                    }catch(Exception err){
+                echo "This is the actual starting stage"
+            }
+        }
+
+        stage("Build") {
+            when {
+                expression {
+                    env.BRANCH_NAME == "testing"  // ✅ Corrected BRANCH_NAME reference
+                }
+            }
+            steps {
+                script {
+                    try {
+                        sh "npm run start"
+                        sh "npm run test "
+                    } catch (Exception err) {
                         echo "error is ${err.getMessage}"
                         throw err
                     }
                 }
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                echo "this is building step.."
             }
         }
     }
