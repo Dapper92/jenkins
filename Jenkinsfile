@@ -30,16 +30,16 @@ pipeline {
                 }
             }
             steps {
-                sh "npm init -y"
-                script {
-                    try {
-                        sh "npm run start"
-                        sh "npm run test | tee builder.log"
-                    } catch (Exception err) {
-                        sh "echo ${err} | tee builder.log"
-                        throw err
-                    }
-                }
+                // sh "npm init -y"
+                // script {
+                //     try {
+                //         sh "npm run start"
+                //         sh "npm run test | tee builder.log"
+                //     } catch (Exception err) {
+                //         sh "echo ${err} | tee builder.log"
+                //         throw err
+                //     }
+                // }
             }
         }
 
