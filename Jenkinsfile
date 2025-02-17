@@ -5,10 +5,15 @@ pipeline {
         nodejs "node 18"
     }
 
+    environment {
+        IMAGE_NAME = "your-dockerhub-username/your-image-name"
+        IMAGE_TAG = "latest"
+    }
+
     stages {
         stage("checkout") {
             steps {
-                git "https://github.com/Dapper92/jenkins.git"
+                git branch: "testing", url: "https://github.com/Dapper92/jenkins.git"
             }
         }
 
@@ -21,7 +26,7 @@ pipeline {
         stage("Build") {
             when {
                 expression {
-                    env.BRANCH_NAME == "testing"  // ✅ Corrected BRANCH_NAME reference
+                    env.BRANCH_NAME == "testing"
                 }
             }
             steps {
@@ -34,6 +39,31 @@ pipeline {
                         sh "echo ${err} | tee builder.log"
                         throw err
                     }
+                }
+            }
+        }
+
+        stage("Docker Build") {
+            when {
+                expression {
+                    env.BRANCH_NAME == "testing"
+                }
+            }
+            steps {
+                script {
+                    echo "Building Docker image: ${dapper01/new-test-image}:${1}"
+                    
+                    // Build the Docker image
+                    sh "docker build -t dapper01/new-test-image:1 ."
+
+                     // Use Jenkins credentials to log in to DockerHub securely
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        sh "echo 'Logging into DockerHub securely...'"
+                        sh "docker login -u $DOCKER_USER -p $DOCKER_PASS"
+                    }
+
+                    // Push Docker image
+                    sh "docker push ${dapper01/new-test-image}:${1}"
                 }
             }
         }
@@ -55,7 +85,6 @@ pipeline {
         
         failure {
             script {
-                // Reads the build log to send in the failure email
                 def build_log = readFile("builder.log")
                 emailext(
                     subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}, ${env.BUILD_NUMBER}",
@@ -69,6 +98,10 @@ pipeline {
                     from: "oladapper@gmail.com"
                 )                    
             }
+        }
+    }
+}
+
         }
     }
 }
