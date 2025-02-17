@@ -25,12 +25,13 @@ pipeline {
                 }
             }
             steps {
+                sh "npm init -y"
                 script {
                     try {
                         sh "npm run start"
-                        sh "npm run test "
+                        sh "npm run test | tee builder.log"
                     } catch (Exception err) {
-                        echo "error is ${err.getMessage}"
+                        sh "echo ${err} | tee builder.log"
                         throw err
                     }
                 }
@@ -40,6 +41,8 @@ pipeline {
 
     post {
         success {
+            script { 
+                def build_log =readFile("builder.log")
             emailext(
                 subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME} #${BUILD_NUMBER}",
                 body: "Build Status: ${currentBuild.currentResult}\nCheck the console output at ${env.BUILD_URL}",
@@ -52,7 +55,7 @@ pipeline {
                 script{
                      //def build_log = currentBuild.rawBuild.getLog(100).join('\n') 
                      //def build_log = Manager.build.log
-                     def build_log = readFile("build.log")
+                     def build_log = readFile("builder.log")
                         emailext(
                             subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}, ${env.BUILD_NUMBER}, ${JOB_NAME}, ${build_log},  ${BUILD_URL}",
                             body: "Build Status: ${currentBuild.currentResult}\nCheck the console output at ${env.BUILD_URL}",
