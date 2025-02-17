@@ -58,9 +58,9 @@ pipeline {
                     sh "docker build -t dapper01/new-test-image:1 ."
 
                     // Use Jenkins credentials to log in to DockerHub securely
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'Username', passwordVariable: 'Password')]) {
                         sh "echo 'Logging into DockerHub securely...'"
-                        sh "docker login -u $DOCKER_USER -p $DOCKER_PASS"
+                        sh "docker login -u $username -p $Password"
                     }
 
                     // Push Docker image
