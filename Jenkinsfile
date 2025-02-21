@@ -83,4 +83,3 @@ ppipeline {
                     subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}, ${env.BUILD_NUMBER}",
                     body: """Build Status: ${currentBuild.currentResult}
                     Check the console output at: ${env.BUILD_URL}
-                    Last 1
