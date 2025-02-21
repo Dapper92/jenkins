@@ -1,9 +1,5 @@
-pipeline {
+ppipeline {
     agent any
-
-    tools {
-        nodejs 'NodeJS_18' // Ensure this is correctly configured in Jenkins Global Tools
-    }
 
     environment {
         IMAGE_NAME = "dapper01/new-test-image"
@@ -29,9 +25,10 @@ pipeline {
         //     }
         //     steps {
         //         script {
-        //             withNodeJS(nodeJSInstallationName: 'NodeJS_18') { // Use configured NodeJS installation
+        //             withNodeJS(nodeJSInstallationName: 'NodeJS_18') { // Use the Node.js installation from Jenkins settings
         //                 sh "npm init -y"
         //                 try {
+        //                     sh "npm install"
         //                     sh "npm run start"
         //                     sh "npm run test | tee builder.log"
         //                 } catch (Exception err) {
