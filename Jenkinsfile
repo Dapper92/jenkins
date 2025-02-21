@@ -1,8 +1,8 @@
-pipeline {
+ppipeline {
     agent any
 
     tools {
-        nodejs "node18"
+        nodejs 'NodeJS_18' // Ensure this is correctly configured in Jenkins Global Tools
     }
 
     environment {
@@ -25,46 +25,38 @@ pipeline {
 
         // stage("Build") {
         //     when {
-        //         expression {
-        //             env.BRANCH_NAME == "testing"
-        //         }
+        //         expression { env.BRANCH_NAME == "testing" }
         //     }
         //     steps {
-        //         echo "Running build stage..."
-        //         sh "npm init -y"
         //         script {
-        //             try {
-        //                 sh "npm run start"
-        //                 sh "npm run test | tee builder.log"
-        //             } catch (Exception err) {
-        //                 sh "echo ${err} | tee builder.log"
-        //                 throw err
+        //             withNodeJS(nodeJSInstallationName: 'NodeJS_18') { // Use configured NodeJS installation
+        //                 sh "npm init -y"
+        //                 try {
+        //                     sh "npm run start"
+        //                     sh "npm run test | tee builder.log"
+        //                 } catch (Exception err) {
+        //                     sh "echo ${err} | tee builder.log"
+        //                     throw err
+        //                 }
         //             }
         //         }
         //     }
         // }
 
-        stage("Docker Build") {
+        // stage("Docker Build") {
             when {
-                expression {
-                    env.BRANCH_NAME == "testing"
-                }
+                expression { env.BRANCH_NAME == "testing" }
             }
             steps {
                 script {
-                    // echo "Building Docker image: ${dapper01/new-test-image}:${1}"
-                    
-                    // Build the Docker image
-                    sh "docker build -t dapper01/new-test-image:1 ."
+                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
 
-                    // Use Jenkins credentials to log in to DockerHub securely
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'Username', passwordVariable: 'Password')]) {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh "echo 'Logging into DockerHub securely...'"
-                        sh "docker login -u $username -p $Password"
+                        sh "echo $PASSWORD | docker login -u $USERNAME --password-stdin"
                     }
 
-                    // Push Docker image
-                    sh "docker push dapper01/new-test-image:1"
+                    sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
                 }
             }
         }
@@ -91,14 +83,4 @@ pipeline {
                     subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}, ${env.BUILD_NUMBER}",
                     body: """Build Status: ${currentBuild.currentResult}
                     Check the console output at: ${env.BUILD_URL}
-                    Last 100 lines of build log:
-                    ${build_log}
-                    """,
-                    to: "oladapper92@gmail.com",
-                    replyTo: "oladapper@gmail.com",
-                    from: "oladapper@gmail.com"
-                )                    
-            }
-        }
-    }
-}
+                    Last 1
