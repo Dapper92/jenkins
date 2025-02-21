@@ -1,4 +1,4 @@
-ppipeline {
+pipeline {
     agent any
 
     tools {
@@ -43,7 +43,7 @@ ppipeline {
         //     }
         // }
 
-        // stage("Docker Build") {
+        stage("Docker Build") {
             when {
                 expression { env.BRANCH_NAME == "testing" }
             }
@@ -83,3 +83,14 @@ ppipeline {
                     subject: "Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}, ${env.BUILD_NUMBER}",
                     body: """Build Status: ${currentBuild.currentResult}
                     Check the console output at: ${env.BUILD_URL}
+                    Last 100 lines of build log:
+                    ${build_log}
+                    """,
+                    to: "oladapper92@gmail.com",
+                    replyTo: "oladapper@gmail.com",
+                    from: "oladapper@gmail.com"
+                )                    
+            }
+        }
+    }
+}
